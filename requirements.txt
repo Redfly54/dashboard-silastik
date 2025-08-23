@@ -1,0 +1,8 @@
+pandas
+plotly
+scikit-learn
+user_agents
+mlxtend
+networkx
+gunicorn
+streamlit

@@ -1,0 +1,38 @@
+/* Menggunakan font yang lebih modern dan mudah dibaca */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #fcfdff;
+}
+
+/* Memberi sedikit bayangan dan radius pada card */
+.card {
+    border: none;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    border-radius: 12px;
+}
+
+/* Styling untuk judul utama di setiap halaman */
+h1, h2, h3, h4, h5 {
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+/* Mengubah warna teks utama */
+.lead, p, li {
+    color: #34495e;
+}
+
+/* Memberi sedikit ruang pada kontainer utama */
+.container, .container-fluid {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+}
+
+/* Styling untuk sidebar agar lebih bersih */
+.nav-pills .nav-link {
+    border-radius: 8px;
+}
+
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+    background-color: #0d6efd; /* Warna biru standar bootstrap */
+}
