@@ -65,6 +65,15 @@ def render_page():
     fig_day = px.line(x=daily_counts.index, y=daily_counts.values, markers=True, labels={'x': 'Hari', 'y': 'Jumlah Request'}, title='Aktivitas per Hari')
     st.plotly_chart(fig_day, use_container_width=True)
 
+    df_feb = df_final[df_final['Timestamp'].dt.month == 2].copy()
+    if not df_feb.empty:
+        df_feb['FebWeek'] = df_feb['Timestamp'].dt.isocalendar().week
+        weekly_counts = df_feb.groupby('FebWeek')['Timestamp'].count()
+        fig_week = px.line(x=weekly_counts.index, y=weekly_counts.values, markers=True, labels={'x': 'Minggu ke-', 'y': 'Jumlah Request'}, title='Aktivitas Mingguan (31 Januari - 28 Februari 2025)')
+        st.plotly_chart(fig_week, use_container_width=True)
+    else:
+        st.warning("Tidak ada data untuk bulan Februari untuk menampilkan aktivitas mingguan.")
+
     st.header("Analisis Perangkat Pengguna")
     col1, col2 = st.columns(2)
     with col1:
@@ -79,16 +88,24 @@ def render_page():
     # --- FIX: Menambahkan kembali visualisasi Sumber Akses ---
     st.header("Sumber Akses Pengguna")
     def categorize_referrer(ref):
-        if 'google' in str(ref): return 'Google'
-        elif 'direct access' in str(ref): return 'Akses Langsung'
-        else: return 'Lainnya'
+        ref_str = str(ref).lower()
+        if 'google' in ref_str:
+            return 'Google'
+        if 'bps.go.id' in ref_str:
+            return 'Situs BPS Lain'
+        if 'direct access' in ref_str or ref_str == '-':
+            return 'Akses Langsung'
+        return 'Lainnya'
+
     df_final['ReferrerCategory'] = df_final['Referrer'].apply(categorize_referrer)
     referrer_counts = df_final['ReferrerCategory'].value_counts()
-    
+
+    referrer_counts_filtered = referrer_counts.drop(labels=['Situs BPS Lain'], errors='ignore')
+
     fig_referrer = px.bar(
-        y=referrer_counts.index, 
-        x=referrer_counts.values, 
+        y=referrer_counts_filtered.index, 
+        x=referrer_counts_filtered.values, 
         orientation='h', 
         title='Distribusi Sumber Akses'
-    ).update_layout(yaxis={'categoryorder':'total ascending'}, yaxis_title='Jenis Sumber Akses', xaxis_title='Jumlah Request')
+    ).update_layout(yaxis={'categoryorder':'total ascending'}, yaxis_title='Jenis Sumber Akses',  xaxis_title='Jumlah Request')
     st.plotly_chart(fig_referrer, use_container_width=True)
